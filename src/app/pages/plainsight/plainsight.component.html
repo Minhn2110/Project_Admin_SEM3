@@ -97,9 +97,42 @@
     <div class="row">
       <div class="col">
         <div class="card shadow">
-            <table mat-table [dataSource]="dataSource">
+            <div class="card-header border-0">
+              <h3 class="mb-0">User List</h3>
+            </div>
+            <div class="card-header border-0 action">
+              <mat-form-field floatLabel="never">
+                <input #searchInput matInput placeholder="Search" value=' '>
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <mat-label>Date from</mat-label>
+                <input matInput [matDatepicker]="dateFrom">
+                <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+                <mat-datepicker touchUi #dateFrom></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <mat-label>Date to</mat-label>
+                <input matInput [matDatepicker]="dateTo">
+                <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+                <mat-datepicker touchUi #dateTo></mat-datepicker>
+              </mat-form-field>
+                            
+              <mat-form-field>
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="selectOption" (selectionChange)="selectLogic()">
+                  <mat-option value="true">
+                    Active
+                  </mat-option>
+                  <mat-option value="false">
+                    Deactive
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+            </div>
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortLogic($event)">
                 <ng-container [matColumnDef]="column.columnDef" *ngFor="let column of filteredColumn">
-                  <th mat-header-cell *matHeaderCellDef> {{ column.header }} </th>
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.header }} </th>
                   <td mat-cell *matCellDef="let element"> {{ column.cell(element) }} </td>
                 </ng-container>
                 <ng-container matColumnDef="checkBox">
