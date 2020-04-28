@@ -5,6 +5,8 @@ import { ajax } from 'rxjs/ajax';
 import { map, catchError, switchMap, debounceTime, tap, distinctUntilChanged } from 'rxjs/operators';
 import { of, fromEvent, interval } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { UserCreateComponent } from './user-create/user-create.component';
 
 export interface PeriodicElement {
   name: string;
@@ -34,8 +36,18 @@ export class PlainsightComponent implements OnInit {
   username: any;
   price: any;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) {}
 
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(UserCreateComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 
   column = [
     { columnDef: 'checkBox', header: '', cell: element => `` },

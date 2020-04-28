@@ -58,6 +58,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
+import { UserCreateComponent } from 'src/app/pages/user/user-create/user-create.component';
 
 @NgModule({
   imports: [
@@ -162,7 +163,8 @@ import {MatTreeModule} from '@angular/material/tree';
     TablesComponent,
     IconsComponent,
     MapsComponent,
-    PlainsightComponent
+    PlainsightComponent,
+    UserCreateComponent
   ]
 })
 
