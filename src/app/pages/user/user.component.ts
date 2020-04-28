@@ -50,7 +50,6 @@ export class PlainsightComponent implements OnInit {
   }
 
   column = [
-    { columnDef: 'checkBox', header: '', cell: element => `` },
     { columnDef: 'id', header: 'Id', cell: element => `${element.id}` },
     { columnDef: 'productName', header: 'Name', cell: element => `${element.giveName}` },
     { columnDef: 'type', header: 'Type', cell: element => `${element.company}` },
@@ -69,7 +68,7 @@ export class PlainsightComponent implements OnInit {
 
   displayedColumns = this.column.map(item => item.columnDef);
   filteredColumn = this.column.filter(item => {
-    return item.columnDef !== 'checkBox' && item.columnDef !== 'addToCart'
+    return item.columnDef !== 'addToCart'
   })
 
   dataSource = new MatTableDataSource();
@@ -160,6 +159,7 @@ export class PlainsightComponent implements OnInit {
     console.log('sort', event);
   }
   resetDataSource(datasource) {
+    this.paginator.pageIndex = 0;
     this.dataSource = new MatTableDataSource(datasource);
   }
 

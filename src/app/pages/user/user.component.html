@@ -100,11 +100,11 @@
         <div class="col">
           <div class="card shadow">
               <div class="card-header border-0">
-                <h3 class="mb-0">User List</h3>
+                <h1 class="mb-0">User List</h1>
               </div>
               <div class="card-header border-0 action">
                 <mat-form-field floatLabel="never">
-                  <input #searchInput matInput placeholder="Search" value=' '>
+                  <input #searchInput matInput placeholder="Search">
                 </mat-form-field>
                 <mat-form-field class="example-full-width">
                   <mat-label>Date from</mat-label>
@@ -137,15 +137,12 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.header }} </th>
                     <td mat-cell *matCellDef="let element"> {{ column.cell(element) }} </td>
                   </ng-container>
-                  <ng-container matColumnDef="checkBox">
-                    <th mat-header-cell *matHeaderCellDef> Checkbox </th>
-                    <td mat-cell *matCellDef="let row"> 
-                      <mat-checkbox [id]="row.id" class="example-margin" (change)="addItem($event, row)" [checked]="row.checked"></mat-checkbox>
-                     </td>
-                  </ng-container>
                   <ng-container matColumnDef="addToCart">
-                    <th mat-header-cell *matHeaderCellDef> Add </th>
-                    <td mat-cell *matCellDef="let row"><button mat-raised-button color="primary" >Add</button></td>
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let row">
+                      <button mat-raised-button color="primary" class="admin-user-edit" >EDIT</button>
+                      <button mat-raised-button color="warn" class="admin-user-delete" >DELETE</button>
+                    </td>
                   </ng-container>
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
