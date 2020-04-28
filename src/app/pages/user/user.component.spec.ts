@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlainsightComponent } from './plainsight.component';
+import { PlainsightComponent } from './user.component';
 
 describe('PlainsightComponent', () => {
   let component: PlainsightComponent;

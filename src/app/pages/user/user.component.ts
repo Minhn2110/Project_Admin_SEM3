@@ -25,8 +25,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 @Component({
   selector: 'app-plainsight',
-  templateUrl: './plainsight.component.html',
-  styleUrls: ['./plainsight.component.scss']
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.scss']
 })
 
 
