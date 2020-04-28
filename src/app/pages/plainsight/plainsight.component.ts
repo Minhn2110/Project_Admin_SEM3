@@ -72,7 +72,7 @@ export class PlainsightComponent implements OnInit {
     // console.log('filterColumns', this.column);
 
 
-    this.getData(this.pageIndex, this.pageSize, '');
+    this.getData(this.pageIndex, this.pageSize, '', this.sortBy, this.order);
   }
   ngAfterViewInit(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
