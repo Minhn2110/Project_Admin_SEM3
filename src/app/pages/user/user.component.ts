@@ -41,7 +41,7 @@ export class PlainsightComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(UserCreateComponent, {
-      width: '250px',
+      width: '650px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
