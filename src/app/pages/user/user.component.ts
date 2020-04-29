@@ -55,9 +55,9 @@ export class PlainsightComponent implements OnInit {
 
   column = [
     { columnDef: 'STT', header: '', cell: element => `` },
-    { columnDef: 'productName', header: 'Product Name', cell: element => `${element.Name}` },
+    { columnDef: 'name', header: 'Product Name', cell: element => `${element.Name}` },
     { columnDef: 'price', header: 'Price', cell: element => `${element.Price}` },
-    { columnDef: 'quantity', header: 'Quantity', cell: element => `${element.InStock}` },
+    { columnDef: 'InStock', header: 'Quantity', cell: element => `${element.InStock}` },
     { columnDef: 'CreateAt', header: 'Create At', cell: element => `${element.CreateAt}` },
     { columnDef: 'UpdateAt', header: 'Update At', cell: element => `${element.UpdateAt}` },
     { columnDef: 'DeleteAt', header: 'Delete At', cell: element => `${element.DeleteAt}` },
@@ -71,16 +71,15 @@ export class PlainsightComponent implements OnInit {
   selectedItems = [];
   length = 30;
   // Default page size
-  pageSize = 10;
-  pageIndex = 0;
-  order = '';
+
   selectOption: any;
 
 
   // New
   sortType = 'asc';
   sortBy = 'price';
-
+  pageSize = 10;
+  pageIndex = 0;
 
   displayedColumns = this.column.map(item => item.columnDef);
   filteredColumn = this.column.filter(item => {
@@ -93,13 +92,6 @@ export class PlainsightComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   ngOnInit() {
-
-    // console.log('displayedColumns', this.displayedColumns);
-    // console.log('filterColumns', this.filteredColumn);
-    // console.log('filterColumns', this.column);
-
-
-    this.getData(this.pageIndex, this.pageSize, '', this.sortBy, this.order);
     this.initPagination();
   }
   ngAfterViewInit(): void {
@@ -114,20 +106,18 @@ export class PlainsightComponent implements OnInit {
     });
   }
   handleData(data) {
-    if (data) {
       if(data.Products.length > 0) {
         console.log('aaa', data);
         this.dataSource = new MatTableDataSource(data.Products);
         this.length = data.TotalItems;
       }
-    }
   }
   changePageLogic(event) {
     console.log(event);
     this.pageSize = event.pageSize;
-    this.service.getProductList('', 'asc', 'price',event.pageIndex, event.pageSize).subscribe(data => {
+    this.service.getProductList('', this.sortType, this.sortBy ,event.pageIndex, event.pageSize).subscribe(data => {
       this.handleData(data);
-    })
+    });
   }
 
 
@@ -183,14 +173,23 @@ export class PlainsightComponent implements OnInit {
   selectLogic() {
     console.log('select', this.selectOption);
     // Reset pageIndex in Material Table
-    this.paginator.pageIndex = 0;
-    this.getData(1, this.pageSize, this.selectOption, this.sortBy, this.order);
+    // this.service.getProductList('', 'asc', 'price',event.pageIndex, event.pageSize).subscribe(data => {
+    //   if (data) {
+    //     this.paginator.pageIndex = 0;
+    //     this.handleData(data);
+    //   }
+    // });
+    // this.getData(1, this.pageSize, this.selectOption, this.sortBy, this.order);
   }
   sortLogic(event) {
-    this.paginator.pageIndex = 0;
-    this.sortBy = event.active;
-    this.order = event.direction;
-    this.getData(1, this.pageSize, '', event.active, event.direction);
+    this.service.getProductList('', event.direction, event.active, 0, this.pageSize).subscribe(data => {
+      if (data) {
+        this.paginator.pageIndex = 0;
+        this.sortBy = event.active;
+        this.sortType = event.direction;        
+        this.handleData(data);
+      }
+    });
     console.log('sort', event);
   }
   resetDataSource(datasource) {
