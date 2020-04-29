@@ -1,13 +1,44 @@
 <!-- <p>user-create works!</p> -->
-<h1 mat-dialog-title>Hi Minh</h1>
-<div mat-dialog-content>
-  <p>What's your favorite animal?</p>
-  <mat-form-field>
-    <mat-label>Favorite Animal</mat-label>
-    <input matInput placeholder="Search" value=''>
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button cdkFocusInitial>Ok</button>
-</div>
+<section class="user-popup">
+  <h1 mat-dialog-title>Product Create</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Product Name</mat-label>
+      <input matInput placeholder="Please enter your product" value=''>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <input matInput placeholder="Please enter product price" value=''>
+    </mat-form-field>
+    <!-- <mat-form-field>
+      <mat-label>Thumbnail</mat-label>
+      <input matInput placeholder="Please enter product thumbnail" value=''>
+    </mat-form-field> -->
+    <mat-form-field>
+      <mat-label>Quantity</mat-label>
+      <input matInput placeholder="Please enter product quantity" value=''>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select>
+        <mat-option value="0">
+          Active
+        </mat-option>
+        <mat-option value="1">
+          Deactive
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="form-group">
+      <label for="file">Choose File</label>
+      <input type="file"
+             id="file"
+             (change)="handleFileInput($event.target.files)">
+  </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button cdkFocusInitial (click)="create()">Ok</button>
+  </div>
+</section>
+

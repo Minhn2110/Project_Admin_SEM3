@@ -3,10 +3,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ajax } from 'rxjs/ajax';
 import { map, catchError, switchMap, debounceTime, tap, distinctUntilChanged } from 'rxjs/operators';
-import { of, fromEvent, interval } from 'rxjs';
+import { of, fromEvent, interval, Observable } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { UserCreateComponent } from './user-create/user-create.component';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { AdminServiceService } from '../service/admin-service.service';
 
 export interface PeriodicElement {
   name: string;
@@ -14,8 +16,6 @@ export interface PeriodicElement {
   private: any;
   fork: any;
 }
-
-
 
 const ELEMENT_DATA: PeriodicElement[] = [
   { position: 1, name: 'Hydrogen', private: 1.0079, fork: 'H' },
@@ -36,39 +36,55 @@ export class PlainsightComponent implements OnInit {
   username: any;
   price: any;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private service: AdminServiceService) {}
 
 
   openDialog(): void {
     const dialogRef = this.dialog.open(UserCreateComponent, {
       width: '650px',
+      height: '400px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // this.service.createProductList().subscribe(response => {
+      //   console.log(response);
+      // });
+      // console.log('The dialog was closed');
     });
   }
 
   column = [
-    { columnDef: 'id', header: 'Id', cell: element => `${element.id}` },
-    { columnDef: 'productName', header: 'Name', cell: element => `${element.giveName}` },
-    { columnDef: 'type', header: 'Type', cell: element => `${element.company}` },
-    { columnDef: 'price', header: 'Price', cell: element => `${element.surname}` },
+    { columnDef: 'STT', header: '', cell: element => `` },
+    { columnDef: 'productName', header: 'Product Name', cell: element => `${element.Name}` },
+    { columnDef: 'price', header: 'Price', cell: element => `${element.Price}` },
+    { columnDef: 'quantity', header: 'Quantity', cell: element => `${element.InStock}` },
+    { columnDef: 'CreateAt', header: 'Create At', cell: element => `${element.CreateAt}` },
+    { columnDef: 'UpdateAt', header: 'Update At', cell: element => `${element.UpdateAt}` },
+    { columnDef: 'DeleteAt', header: 'Delete At', cell: element => `${element.DeleteAt}` },
+    { columnDef: 'status', header: 'Status', cell: element => `${element.Status == 1 ? 'Active' : 'Deactive'}`},
+
+
     { columnDef: 'addToCart', header: '', cell: element => `` },
   ]
 
   productList = [];
   selectedItems = [];
   length = 30;
-  pageSize = 5;
-  pageIndex = 1;
-  sortBy = '';
+  // Default page size
+  pageSize = 10;
+  pageIndex = 0;
   order = '';
   selectOption: any;
 
+
+  // New
+  sortType = 'asc';
+  sortBy = 'price';
+
+
   displayedColumns = this.column.map(item => item.columnDef);
   filteredColumn = this.column.filter(item => {
-    return item.columnDef !== 'addToCart'
+    return item.columnDef !== 'STT' &&  item.columnDef !== 'addToCart'
   })
 
   dataSource = new MatTableDataSource();
@@ -84,41 +100,60 @@ export class PlainsightComponent implements OnInit {
 
 
     this.getData(this.pageIndex, this.pageSize, '', this.sortBy, this.order);
+    this.initPagination();
   }
   ngAfterViewInit(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
     this.searchLogic();
   }
+
+  initPagination() {
+    this.service.getProductList('', 'asc', 'price', 0, 10).subscribe(data =>  {
+      this.handleData(data);
+    });
+  }
+  handleData(data) {
+    if (data) {
+      if(data.Products.length > 0) {
+        console.log('aaa', data);
+        this.dataSource = new MatTableDataSource(data.Products);
+        this.length = data.TotalItems;
+      }
+    }
+  }
+  changePageLogic(event) {
+    console.log(event);
+    this.pageSize = event.pageSize;
+    this.service.getProductList('', 'asc', 'price',event.pageIndex, event.pageSize).subscribe(data => {
+      this.handleData(data);
+    })
+  }
+
+
   getData(pageIndex, pageSize, search, sortBy, order) {
     // const url = `https://api.github.com/users/geerlingguy/repos?per_page=${pageSize}&page=${pageIndex}`;
-    const url = `https://5dcb83d334d54a001431503b.mockapi.io/api/paging/book?page=${pageIndex}&limit=${pageSize}&search=${search}&sortBy=${sortBy}&order=${order}`;
+    // const url = `https://5dcb83d334d54a001431503b.mockapi.io/api/paging/book?page=${pageIndex}&limit=${pageSize}&search=${search}&sortBy=${sortBy}&order=${order}`;
+    const url = `https://api-demo-sem3.azurewebsites.net/api/Products?keyword&sortType=asc&sortBy=price&pageNumber=0&pageSize=10`;
 
     ajax({
       url: url,
       method: 'GET',
-      // body: {
-      //   limit: '',
-      //   page: '',
-      //   search: '',
-      //   sortBy:
-
-      // },
       responseType: "json",
     }).pipe(
-      map(response => response.response),
+      map(response => response),
       catchError(error => {
         console.log('error: ', error);
         return of(error);
       })
     ).subscribe(item => {
+      // debugger;
       this.productList = item;
       // this.length = this.getRandomInt(40);
       this.length = 40;
 
 
       console.log('data', item);
-      this.dataSource = new MatTableDataSource(this.productList);
       // this.dataSource.sort = this.sort;
       // this.dataSource.paginator = this.paginator;
     })
@@ -133,7 +168,7 @@ export class PlainsightComponent implements OnInit {
       switchMap((i: any) => {
         const searchWord = i.currentTarget.value;
         return ajax({
-          url: `https://5dcb83d334d54a001431503b.mockapi.io/api/paging/book?page=1&limit=${this.pageSize}&search=${searchWord ? searchWord : ''}`,
+          url: `https://api-demo-sem3.azurewebsites.net/api/Products?keyword=${searchWord}&sortType=${this.sortType}&sortBy=${this.sortBy}&pageNumber=${this.pageIndex}&pageSize=${this.pageSize}`,
           method: 'GET',
         }).pipe(catchError(err => of(err)));
       }),
@@ -141,7 +176,7 @@ export class PlainsightComponent implements OnInit {
       .subscribe((response) => {
         if (response) {
           console.log(response);
-          this.resetDataSource(response.response);
+          this.resetDataSource(response.response.Products);
         }
       });
   }
@@ -163,12 +198,7 @@ export class PlainsightComponent implements OnInit {
     this.dataSource = new MatTableDataSource(datasource);
   }
 
-  changePage(event) {
-    console.log(event);
-    this.pageSize = event.pageSize;
-    this.getData(event.pageIndex + 1, event.pageSize, '', this.sortBy, this.order);
-    // alert('a');
-  }
+
 
   search() {
     // Reset Page index, Page size when search

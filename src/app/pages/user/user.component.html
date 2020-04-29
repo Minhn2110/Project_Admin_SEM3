@@ -133,6 +133,10 @@
                 
               </div>
               <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortLogic($event)">
+                <ng-container matColumnDef="STT">
+                  <th mat-header-cell *matHeaderCellDef> No. </th>
+                  <td mat-cell *matCellDef="let row, let i = index"> {{i + 1}} </td>
+                </ng-container>
                   <ng-container [matColumnDef]="column.columnDef" *ngFor="let column of filteredColumn">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.header }} </th>
                     <td mat-cell *matCellDef="let element"> {{ column.cell(element) }} </td>
@@ -148,7 +152,7 @@
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 
                 </table>
-                <mat-paginator [pageSizeOptions]="[5, 10, 20]" [length]="length" (page)="changePage($event)"
+                <mat-paginator [pageSizeOptions]="[10, 20, 30]" [length]="length" (page)="changePageLogic($event)"
                 ></mat-paginator>
   
                <button class="admin-user-add" mat-raised-button (click)="openDialog()">Add User</button>
