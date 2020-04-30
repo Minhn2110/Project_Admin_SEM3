@@ -38,6 +38,26 @@ export class AdminServiceService {
     // return this.http.request('GET', url, { headers: headers, observe: 'response'});
     return this.http.request('GET', url);
   }
+  editProduct(id, name, price, thumbnail, quantity, status): Observable<any> {
+    const url = `${this.environment}/Products/${id}`;
+    return this.http.request('PUT', url, {
+      body: {
+        "Id": id,
+        "Name": name,
+        "Price": price,
+        "Thumbnail": thumbnail,
+        "CreateAt": "2019-03-11T09:18:54.092Z",
+        "UpdateAt": "2019-04-11T09:18:54.092Z",
+        "DeleteAt": "2019-04-11T09:18:54.092Z",
+        "InStock": quantity,
+        "Status": status
+      }
+    });
+  }
+  deleteProduct(id): Observable<any> {
+    const url = `${this.environment}/Products/${id}`;
+    return this.http.request('DELETE', url);
+  }
   uploadImage(file, name): Observable<any> {
     var file = file;
     var metadata = {

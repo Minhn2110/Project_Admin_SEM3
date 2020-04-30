@@ -42,7 +42,10 @@ export class PlainsightComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(UserCreateComponent, {
       width: '650px',
-      height: '400px'
+      height: '400px',
+      data: {
+        type: 'Create'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -52,15 +55,42 @@ export class PlainsightComponent implements OnInit {
       // console.log('The dialog was closed');
     });
   }
+  edit(row): void {
+    console.log('row', row);
+    const dialogRef = this.dialog.open(UserCreateComponent, {
+      width: '650px',
+      height: '400px',
+      data: {
+        type: 'Edit',
+        id: row.Id,
+        name: row.Name,
+        price: row.Price,
+        quantity: row.InStock,
+        status: row.Status,
+        thumbnail: row.Thumbnail
+      }
+    });
+  }
+  delete(row): void {
+    console.log('row', row);
+    const dialogRef = this.dialog.open(UserCreateComponent, {
+      width: '650px',
+      height: '400px',
+      data: {
+        type: 'Delete',
+        id: row.Id,
+      }
+    });
+  }
 
   column = [
     { columnDef: 'STT', header: '', cell: element => `` },
     { columnDef: 'name', header: 'Product Name', cell: element => `${element.Name}` },
     { columnDef: 'price', header: 'Price', cell: element => `${element.Price}` },
     { columnDef: 'InStock', header: 'Quantity', cell: element => `${element.InStock}` },
-    { columnDef: 'CreateAt', header: 'Create At', cell: element => `${element.CreateAt}` },
-    { columnDef: 'UpdateAt', header: 'Update At', cell: element => `${element.UpdateAt}` },
-    { columnDef: 'DeleteAt', header: 'Delete At', cell: element => `${element.DeleteAt}` },
+    // { columnDef: 'CreateAt', header: 'Create At', cell: element => `${element.CreateAt}` },
+    // { columnDef: 'UpdateAt', header: 'Update At', cell: element => `${element.UpdateAt}` },
+    // { columnDef: 'DeleteAt', header: 'Delete At', cell: element => `${element.DeleteAt}` },
     { columnDef: 'status', header: 'Status', cell: element => `${element.Status == 1 ? 'Active' : 'Deactive'}`},
 
 
@@ -237,41 +267,7 @@ export class PlainsightComponent implements OnInit {
 
   }
 
-  searchForm() {
-    console.log(this.username);
-    const url = `https://localhost:44335/api/Products`;
-    ajax({
-      url: url,
-      body: { Name: this.username, Price: this.price },
-      method: 'POST',
-      responseType: "json",
-    }).pipe(
-      map(response => response),
-      catchError(error => {
-        console.log('error: ', error);
-        return of(error);
-      })
-    ).subscribe(item => {
-      console.log(item);
-    })
-  }
-  getForm() {
-    console.log(this.username);
-    const url = `https://localhost:44335/api/Products`;
-    ajax({
-      url: url,
-      body: {},
-      method: 'GET',
-      responseType: "json",
-    }).pipe(
-      map(response => response),
-      catchError(error => {
-        console.log('error: ', error);
-        return of(error);
-      })
-    ).subscribe(item => {
-      console.log(item);
-    })
-  }
+
+
 
 }

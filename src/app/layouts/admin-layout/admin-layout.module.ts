@@ -64,7 +64,7 @@ import { UserCreateComponent } from 'src/app/pages/user/user-create/user-create.
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
-    FormsModule,
+    FormsModule, ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
     ClipboardModule,
